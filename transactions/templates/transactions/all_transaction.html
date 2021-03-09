@@ -1,0 +1,39 @@
+{% extends 'user/base.html' %}
+{% load static %}
+{% block content %}
+<form method="POST">
+{% csrf_token %}
+<select class="form-control" name="transaction">
+    {% for object in category_list %}
+        <option value="{{object.name}}">{{ object.name }}</option>
+    {% endfor %}
+  </select>
+  <button type="submit" class="btn btn-outline-info mb-2 mt-2">Find</button>
+</form>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Category</th>
+      <th scope="col">Operation Type</th>
+      <th scope="col">Money</th>
+      <th scope="col">Description</th>
+      <th scope="col">Date</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for object in object_list %}
+    <tr>
+      <td>{{ object.category }}</td>
+      <td>{{ object.operation_type }}</td>
+      <td>{{ object.money }}</td>
+      <td>{{ object.description }}</td>
+      <td>{{ object.pub_date }}</td>
+      <td>
+        <a href="{% url 'transaction_update' object.id %}"><img src="{% static 'user/img/writing.png' %}" height="24" width="24" alt="edit"></a>
+        <a href="{% url 'transaction_delete' object.id %}"><img src="{% static 'user/img/delete.png' %}" height="24" width="24" alt="delete"></a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock content %}

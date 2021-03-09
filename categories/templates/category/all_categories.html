@@ -1,0 +1,31 @@
+{% extends 'user/base.html' %}
+{% load static %}
+{% block content %}
+
+<form method="POST">
+  {% csrf_token %}
+  <input name="category" type="text" placeholder="Enter category" class="form-control">
+  <button type="submit" class="btn btn-outline-info mb-2 mt-2">Find</button>
+</form>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">Description</th>
+      <th scope="col">Settings</th>
+    </tr>
+  </thead>
+  <tbody>
+  	{% for object in object_list %}
+    <tr>
+      <td>{{ object.name }}</td>
+      <td>{{ object.brief_description }}</td>
+      <td>
+      	<a href="{% url 'category-update' object.id %}"><img src="{% static 'user/img/writing.png' %}" height="24" width="24" alt="edit"></a>
+      	<a href="{% url 'category-delete' object.id %}"><img src="{% static 'user/img/delete.png' %}" height="24" width="24" alt="delete"></a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock content %}

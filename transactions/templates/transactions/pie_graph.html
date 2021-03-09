@@ -1,0 +1,74 @@
+{% extends 'user/base.html' %}
+{% load static %}
+{% block content %}
+<form method="POST">
+  {% csrf_token %}
+  <input type="date" name="start" id="start"><br>
+  <label for="category">Select first date</label><br>
+  <input type="date" name="end" id="end"><br>
+  <label for="category">Select last date</label><br>
+  <select name="option" class="form-control mt-2" id="option">
+    {% for option in option_list %}
+    <option value="{{ option }}">{{ option }}</option>
+    {% endfor %}
+  </select>
+  <label for="category">Select a operation type</label><br>
+  <button type="submit" class="btn btn-outline-info">Send</button>
+</form>
+<div id="pie" style="min-width: 350px; height: 500px; max-width: 600px; margin: 0 auto" class="mt-4"></div>
+
+<table class="table mt-3">
+  <thead>
+    <tr>
+      <th scope="col">Category</th>
+      <th scope="col">Money</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for value in data_for_table %}
+    <tr>
+      <td>{{ value.name }}</td>
+      <td>{{ value.y }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script>
+  Highcharts.chart('pie', {
+    chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'pie'
+    },
+    title: {
+        text: 'Report for the period: {{ start }} - {{ end }}'
+    },
+    tooltip: {
+        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+    },
+    plotOptions: {
+        pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+                enabled: true,
+                format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                style: {
+                    color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                }
+            }
+        }
+    },
+    series: [{
+        name: 'Brands',
+        colorByPoint: true,
+        data: {{ data|safe }}
+    }]
+});
+</script>
+{% endblock content %}

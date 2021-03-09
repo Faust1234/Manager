@@ -1,0 +1,79 @@
+{% extends 'user/base.html' %}
+{% load static %}
+{% block content %}
+<form method="POST">
+  {% csrf_token %}
+  <input type="date" name="start" id="start"><br>
+  <label for="category">Select first date</label><br>
+  <input type="date" name="end" id="end"><br>
+  <label for="category">Select last date</label><br>
+  <select name="option" class="form-control mt-2" id="option">
+    {% for option in option_list %}
+    <option value="{{ option }}">{{ option }}</option>
+    {% endfor %}
+  </select>
+  <label for="category">Select a operation type</label>
+  <select name="category" class="form-control mt-2" id="category">
+    {% for category in categories_list %}
+    <option value="{{ category.name }}">{{ category.name }}</option>
+    {% endfor %}
+  </select>
+    <label for="category">Select a category</label><br>
+
+  <button type="submit" class="btn btn-outline-info">Send</button>
+</form>
+<div id="spline" style="min-width: 350px; height: 500px; max-width: 600px; margin: 0 auto" class="mt-4"></div>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script>
+  Highcharts.chart('spline', {
+    chart: {
+        type: 'spline',
+        inverted: true
+    },
+    title: {
+        text: 'Distribution {{ operation }} by Days'
+    },
+    xAxis: {
+        reversed: false,
+        title: {
+            enabled: true,
+            text: 'Days'
+        },
+        labels: {
+            format: '{value}'
+        },
+        maxPadding: 0,
+        showLastLabel: true
+    },
+    yAxis: {
+        title: {
+            text: 'Money'
+        },
+        labels: {
+            format: '{value}'
+        },
+        lineWidth: 3
+    },
+    legend: {
+        enabled: false
+    },
+    tooltip: {
+        headerFormat: '<b>{series.name}</b><br/>',
+        pointFormat: '{point.x}: {point.y} $'
+    },
+    plotOptions: {
+        spline: {
+            marker: {
+                enable: false
+            }
+        }
+    },
+    series: [{
+        name: 'Temperature',
+        data: {{ data|safe }},
+    }]
+});
+</script>
+{% endblock content %}
